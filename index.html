@@ -31,26 +31,6 @@
       z-index: 1;
       border: 0;
     }
-    #nickname {
-      position: absolute;
-      left: 50%;
-      top: 58%;
-      transform: translate(-50%, 0);
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 2.5em;
-      color: #fff;
-      text-shadow: 0 2px 8px #000, 0 0 2px #00ffe7;
-      background: rgba(20, 20, 20, 0.7);
-      border-radius: 12px;
-      padding: 12px 32px 8px 32px;
-      letter-spacing: 2px;
-      z-index: 10;
-      pointer-events: none;
-      user-select: none;
-      border: 2px solid #00ffe7;
-      box-shadow: 0 0 16px #00ffe788;
-      animation: flicker 2s infinite alternate;
-    }
     /* Pixel border effect */
     #mynetwork:after {
       content: '';
@@ -63,14 +43,6 @@
       border-radius: 0;
       z-index: 2;
       image-rendering: pixelated;
-    }
-    /* Flicker animation */
-    @keyframes flicker {
-      0%, 100% { filter: brightness(1); }
-      45% { filter: brightness(1.2); }
-      50% { filter: brightness(0.8); }
-      55% { filter: brightness(1.3); }
-      60% { filter: brightness(0.9); }
     }
     /* Node label style override */
     .vis-network .vis-label {
@@ -89,7 +61,6 @@
 </head>
 <body>
   <div id="mynetwork"></div>
-  <div id="nickname">Serega25511s</div>
   <script>
     // SVG pixel cube for central node (base64, 64x64)
     const voxelCube =
@@ -112,11 +83,19 @@
     function createGraph(repos) {
       const nodes = [{
         id: 0,
-        label: "",
+        label: "Serega25511s",
         shape: "circularImage",
         image: voxelCube,
-        size: 100,
-        font: { size: 0 },
+        size: 120,
+        font: {
+          size: 44,
+          color: '#fff',
+          face: 'Orbitron',
+          strokeWidth: 8,
+          strokeColor: '#00ffe7',
+          vadjust: 60,
+          bold: true
+        },
         borderWidth: 0,
         color: { border: '#00ffe7', background: '#23233a' },
         shadow: true
@@ -133,7 +112,7 @@
             background: 'rgba(20,20,20,0.85)',
             highlight: { border: '#00ffe7', background: 'rgba(20,20,20,1)' }
           },
-          font: { color: "#fff", size: 32, face: 'Orbitron' },
+          font: { color: "#fff", size: 28, face: 'Orbitron' },
           url: repo.html_url,
           shadow: true,
           borderWidth: 0,
@@ -148,7 +127,7 @@
         nodes: {
           borderWidth: 0,
           size: 40,
-          font: { size: 32, face: 'Orbitron' },
+          font: { size: 28, face: 'Orbitron' },
           shapeProperties: { borderDashes: false },
           shadow: true,
           margin: 8
