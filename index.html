@@ -1,7 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Портфолио Serega25511s</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #232526 0%, #414345 100%);
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 2.5em;
+      letter-spacing: 2px;
+      color: #4fc3f7;
+      text-shadow: 0 2px 8px #0008;
+    }
+    #mynetwork {
+      width: 100vw;
+      height: 80vh;
+      margin: 0 auto;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px #0006;
+      background: #232526;
+      border: 2px solid #4fc3f7;
+    }
+    .footer {
+      text-align: center;
+      margin: 30px 0 10px 0;
+      color: #aaa;
+      font-size: 1em;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.3em; }
+      #mynetwork { height: 60vh; }
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <h1>Портфолио Serega25511s</h1>
+  <div id="mynetwork"></div>
+  <div class="footer">GitHub: <a href="https://github.com/Serega25511s" style="color:#4fc3f7;" target="_blank">@Serega25511s</a></div>
+  <script>
+    async function fetchRepos() {
+      const res = await fetch('https://api.github.com/users/Serega25511s/repos');
+      return res.json();
+    }
+
+    function createGraph(repos) {
+      const nodes = [{
+        id: 0,
+        label: "Serega25511s",
+        shape: "circularImage",
+        image: "https://avatars.githubusercontent.com/u/139003321?v=4",
+        size: 60,
+        font: { size: 24, color: '#4fc3f7', face: 'Montserrat' },
+        borderWidth: 4,
+        color: { border: '#4fc3f7', background: '#232526' }
+      }];
+      const edges = [];
+      repos.forEach((repo, i) => {
+        nodes.push({
+          id: i+1,
+          label: repo.name,
+          title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
+          shape: "box",
+          color: {
+            border: '#4fc3f7',
+            background: '#fff',
+            highlight: { border: '#ffb300', background: '#e3f2fd' }
+          },
+          font: { color: "#232526", size: 18, face: 'Montserrat' },
+          url: repo.html_url,
+          shadow: true
+        });
+        edges.push({from: 0, to: i+1, color: { color: '#4fc3f7', highlight: '#ffb300' }, width: 2});
+      });
+
+      const container = document.getElementById('mynetwork');
+      const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+      const options = {
+        nodes: { borderWidth: 2, size: 30, font: { size: 16 } },
+        edges: { color: "#fff", width: 2, smooth: true },
+        physics: {
+          stabilization: false,
+          barnesHut: { gravitationalConstant: -30000, springLength: 200, springConstant: 0.04 }
+        },
+        layout: { improvedLayout: true },
+        interaction: { hover: true }
+      };
+      const network = new vis.Network(container, data, options);
+
+      network.on("click", function (params) {
+        if (params.nodes.length > 0 && params.nodes[0] !== 0) {
+          const node = nodes[params.nodes[0]];
+          window.open(node.url, "_blank");
+        }
+      });
+    }
+
+    fetchRepos().then(createGraph);
+  </script>
 </body>
 </html>
