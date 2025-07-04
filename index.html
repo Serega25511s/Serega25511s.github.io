@@ -57,10 +57,157 @@
       border: none !important;
       user-select: none;
     }
+    /* Custom tooltip */
+    #custom-tooltip {
+      position: absolute;
+      z-index: 100;
+      pointer-events: none;
+      background: rgba(34, 26, 16, 0.98);
+      color: #fff;
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 1.1em;
+      border: 2px solid #b8860b;
+      border-radius: 10px;
+      box-shadow: 0 0 16px #b8860b88;
+      padding: 14px 22px 10px 22px;
+      min-width: 220px;
+      max-width: 350px;
+      opacity: 0;
+      transition: opacity 0.18s;
+      pointer-events: none;
+      white-space: pre-line;
+    }
+    #custom-tooltip .tt-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #ffe066;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px #000, 0 0 2px #b8860b;
+    }
+    #custom-tooltip .tt-desc {
+      color: #fff;
+      margin-bottom: 6px;
+      font-size: 1em;
+    }
+    #custom-tooltip .tt-meta {
+      color: #ffe066;
+      font-size: 0.95em;
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    #custom-tooltip .tt-star {
+      color: #ffe066;
+      font-size: 1.1em;
+      margin-right: 2px;
+    }
+    /* Modal styles */
+    #modal-bg {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0; top: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(2px);
+      animation: modal-bg-fade 0.2s;
+    }
+    @keyframes modal-bg-fade {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    #modal {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 320px;
+      max-width: 90vw;
+      background: #221a16;
+      border: 3px solid #b8860b;
+      border-radius: 18px;
+      box-shadow: 0 0 32px #b8860b88, 0 0 2px #fff;
+      padding: 32px 32px 24px 32px;
+      color: #fff;
+      font-family: 'Orbitron', Arial, sans-serif;
+      z-index: 201;
+      animation: modal-pop 0.22s cubic-bezier(.23,1.12,.62,1.01);
+    }
+    @keyframes modal-pop {
+      from { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    #modal .modal-title {
+      font-size: 2em;
+      color: #ffe066;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px #000, 0 0 2px #b8860b;
+    }
+    #modal .modal-desc {
+      font-size: 1.1em;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    #modal .modal-meta {
+      color: #ffe066;
+      font-size: 1.1em;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+    #modal .modal-star {
+      color: #ffe066;
+      font-size: 1.2em;
+      margin-right: 2px;
+    }
+    #modal .modal-link {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 10px 28px;
+      background: #b8860b;
+      color: #221a16;
+      font-size: 1.1em;
+      font-family: 'Orbitron', Arial, sans-serif;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 8px #b8860b88;
+      transition: background 0.15s, color 0.15s;
+    }
+    #modal .modal-link:hover {
+      background: #ffe066;
+      color: #b8860b;
+    }
+    #modal .modal-close {
+      position: absolute;
+      top: 10px; right: 18px;
+      font-size: 2em;
+      color: #ffe066;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Orbitron', Arial, sans-serif;
+      transition: color 0.15s;
+      z-index: 10;
+    }
+    #modal .modal-close:hover {
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <div id="mynetwork"></div>
+  <div id="custom-tooltip"></div>
+  <div id="modal-bg">
+    <div id="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-title"></div>
+      <div class="modal-desc"></div>
+      <div class="modal-meta"></div>
+      <a class="modal-link" href="#" target="_blank">Открыть на GitHub</a>
+    </div>
+  </div>
   <script>
     // SVG pixel cube for central node (base64, 64x64)
     const voxelCube =
@@ -149,7 +296,13 @@
             url: repo.html_url,
             shadow: true,
             borderWidth: 0,
-            size: 40
+            size: 40,
+            _meta: {
+              desc: repo.description || '',
+              stars: repo.stargazers_count,
+              lang: repo.language || '',
+              url: repo.html_url
+            }
           });
           if (groupNodeId) {
             edges.push({ from: groupNodeId, to: nodeId, color: { color: getRandomColor(), highlight: '#fff' }, width: 4, shadow: true });
@@ -184,10 +337,124 @@
       };
       const network = new vis.Network(container, data, options);
 
+      // --- Анимация при наведении ---
+      let lastHoverNode = null;
+      network.on('hoverNode', function(params) {
+        const nodeId = params.node;
+        if (lastHoverNode && lastHoverNode !== nodeId) {
+          data.nodes.update({id: lastHoverNode, size: 40});
+        }
+        if (nodeId !== 'center') {
+          data.nodes.update({id: nodeId, size: 60});
+        } else {
+          data.nodes.update({id: nodeId, size: 140});
+        }
+        lastHoverNode = nodeId;
+      });
+      network.on('blurNode', function(params) {
+        if (lastHoverNode) {
+          if (lastHoverNode !== 'center') {
+            data.nodes.update({id: lastHoverNode, size: 40});
+          } else {
+            data.nodes.update({id: lastHoverNode, size: 120});
+          }
+          lastHoverNode = null;
+        }
+        hideTooltip();
+      });
+
+      // --- Кастомный tooltip ---
+      const tooltip = document.getElementById('custom-tooltip');
+      network.on('showPopup', function(nodeId) {
+        const node = data.nodes.get(nodeId);
+        if (!node || !node.label) return;
+        // Для групп и центра — только название
+        if (nodeId === 'center' || nodeId.toString().startsWith('group_')) {
+          tooltip.innerHTML = `<div class='tt-title'>${node.label}</div>`;
+        } else {
+          // Для проектов — подробности
+          let desc = '';
+          let stars = '';
+          let lang = '';
+          if (node.title) {
+            const lines = node.title.split('\n');
+            desc = lines[0] || '';
+            if (lines[1]) {
+              const meta = lines[1].split('|');
+              stars = meta[0] ? `<span class='tt-star'>★</span> ${meta[0].replace('⭐','').trim()}` : '';
+              lang = meta[1] ? `<span>${meta[1].trim()}</span>` : '';
+            }
+          }
+          tooltip.innerHTML = `<div class='tt-title'>${node.label}</div>` +
+            (desc ? `<div class='tt-desc'>${desc}</div>` : '') +
+            ((stars || lang) ? `<div class='tt-meta'>${stars} ${lang}</div>` : '');
+        }
+        tooltip.style.opacity = 1;
+      });
+      network.on('hidePopup', function() {
+        hideTooltip();
+      });
+      network.on('hoverNode', function(params) {
+        showTooltip(params.node);
+      });
+      network.on('blurNode', function(params) {
+        hideTooltip();
+      });
+      network.on('dragging', function() { hideTooltip(); });
+      network.on('zoom', function() { hideTooltip(); });
+      network.on('beforeDrawing', function(ctx) { hideTooltip(); });
+
+      function showTooltip(nodeId) {
+        const nodePosition = network.getPositions([nodeId])[nodeId];
+        if (!nodePosition) return;
+        const canvasPosition = network.canvasToDOM(nodePosition);
+        tooltip.style.left = (canvasPosition.x + 20) + 'px';
+        tooltip.style.top = (canvasPosition.y - 10) + 'px';
+        network.emit('showPopup', nodeId);
+      }
+      function hideTooltip() {
+        tooltip.style.opacity = 0;
+      }
+
+      // --- Модальное окно ---
+      const modalBg = document.getElementById('modal-bg');
+      const modal = document.getElementById('modal');
+      const modalTitle = modal.querySelector('.modal-title');
+      const modalDesc = modal.querySelector('.modal-desc');
+      const modalMeta = modal.querySelector('.modal-meta');
+      const modalLink = modal.querySelector('.modal-link');
+      function openModal(node) {
+        if (!node) return;
+        modalTitle.textContent = node.label;
+        let desc = node._meta?.desc || '';
+        let stars = node._meta?.stars || '';
+        let lang = node._meta?.lang || '';
+        modalDesc.textContent = desc;
+        modalMeta.innerHTML = '';
+        if (stars) modalMeta.innerHTML += `<span class='modal-star'>★</span> ${stars}`;
+        if (lang) modalMeta.innerHTML += `<span>${lang}</span>`;
+        modalLink.href = node._meta?.url || '#';
+        modalBg.style.display = 'block';
+        setTimeout(() => { modalBg.style.opacity = 1; }, 10);
+      }
+      window.closeModal = function() {
+        modalBg.style.opacity = 0;
+        setTimeout(() => { modalBg.style.display = 'none'; }, 200);
+      };
+      modalBg.addEventListener('click', function(e) {
+        if (e.target === modalBg) window.closeModal();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') window.closeModal();
+      });
+
       network.on("click", function (params) {
         if (params.nodes.length > 0) {
-          const node = nodes.find(n => n.id === params.nodes[0]);
-          if (node && node.url) {
+          const node = data.nodes.get(params.nodes[0]);
+          // Только для проектов (не центр и не группа)
+          if (node && node._meta) {
+            openModal(node);
+          } else if (node && node.url) {
             window.open(node.url, "_blank");
           }
         }
