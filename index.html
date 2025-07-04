@@ -357,7 +357,7 @@
           nodes.push({
             id: nodeId,
             label: repo.name,
-            title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
+            title: '',
             shape: "box",
             color: {
               border: 'rgba(0,0,0,0)',
@@ -405,7 +405,7 @@
           barnesHut: { gravitationalConstant: -30000, springLength: 250, springConstant: 0.04 }
         },
         layout: { improvedLayout: true },
-        interaction: { hover: true }
+        interaction: { hover: true, tooltipDelay: 999999 }
       };
       const network = new vis.Network(container, data, options);
 
