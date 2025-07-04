@@ -9,45 +9,29 @@
   <style>
     :root {
       --main-bg: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="%23221a16"/><rect x="0" y="0" width="16" height="16" fill="%23332a24"/><rect x="16" y="16" width="16" height="16" fill="%23332a24"/><rect x="0" y="16" width="16" height="16" fill="%23443a32"/><rect x="16" y="0" width="16" height="16" fill="%23443a32"/><rect x="0" y="0" width="32" height="2" fill="%235c463a"/><rect x="0" y="30" width="32" height="2" fill="%235c463a"/><rect x="0" y="0" width="2" height="32" fill="%235c463a"/><rect x="30" y="0" width="2" height="32" fill="%235c463a"/></svg>');
-      --border-color: #b8860b;
-      --label-shadow: #b8860b;
-      --label-bg: rgba(20,20,20,0.85);
-      --label-meta: #ffe066;
+      --main-border: #b8860b;
+      --main-glow: #b8860b88;
+      --main-accent: #ffe066;
+      --main-label-shadow: #b8860b;
       --modal-bg: #221a16;
       --modal-border: #b8860b;
-      --modal-title: #ffe066;
       --modal-link-bg: #b8860b;
+      --modal-link-hover: #ffe066;
       --modal-link-color: #221a16;
-      --modal-link-hover-bg: #ffe066;
       --modal-link-hover-color: #b8860b;
     }
-    body[data-theme='retro'] {
-      --main-bg: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="%230f380f"/><rect x="0" y="0" width="16" height="16" fill="%23137b13"/><rect x="16" y="16" width="16" height="16" fill="%23137b13"/><rect x="0" y="16" width="16" height="16" fill="%2322b14c"/><rect x="16" y="0" width="16" height="16" fill="%2322b14c"/><rect x="0" y="0" width="32" height="2" fill="%230f380f"/><rect x="0" y="30" width="32" height="2" fill="%230f380f"/><rect x="0" y="0" width="2" height="32" fill="%230f380f"/><rect x="30" y="0" width="2" height="32" fill="%230f380f"/></svg>');
-      --border-color: #22b14c;
-      --label-shadow: #22b14c;
-      --label-bg: rgba(34, 255, 34, 0.85);
-      --label-meta: #fff;
-      --modal-bg: #0f380f;
-      --modal-border: #22b14c;
-      --modal-title: #22b14c;
-      --modal-link-bg: #22b14c;
-      --modal-link-color: #0f380f;
-      --modal-link-hover-bg: #fff;
-      --modal-link-hover-color: #22b14c;
-    }
-    body[data-theme='cyber'] {
-      --main-bg: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="%231a002a"/><rect x="0" y="0" width="16" height="16" fill="%2340007a"/><rect x="16" y="16" width="16" height="16" fill="%2340007a"/><rect x="0" y="16" width="16" height="16" fill="%23ff00cc"/><rect x="16" y="0" width="16" height="16" fill="%23ff00cc"/><rect x="0" y="0" width="32" height="2" fill="%23ff00cc"/><rect x="0" y="30" width="32" height="2" fill="%23ff00cc"/><rect x="0" y="0" width="2" height="32" fill="%23ff00cc"/><rect x="30" y="0" width="2" height="32" fill="%23ff00cc"/></svg>');
-      --border-color: #ff00cc;
-      --label-shadow: #ff00cc;
-      --label-bg: rgba(40,0,60,0.85);
-      --label-meta: #ff00cc;
-      --modal-bg: #1a002a;
-      --modal-border: #ff00cc;
-      --modal-title: #ff00cc;
-      --modal-link-bg: #ff00cc;
-      --modal-link-color: #1a002a;
-      --modal-link-hover-bg: #fff;
-      --modal-link-hover-color: #ff00cc;
+    .theme-night {
+      --main-bg: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="%23181825"/><rect x="0" y="0" width="16" height="16" fill="%23232a3a"/><rect x="16" y="16" width="16" height="16" fill="%23232a3a"/><rect x="0" y="16" width="16" height="16" fill="%23333a4a"/><rect x="16" y="0" width="16" height="16" fill="%23333a4a"/><rect x="0" y="0" width="32" height="2" fill="%234c567a"/><rect x="0" y="30" width="32" height="2" fill="%234c567a"/><rect x="0" y="0" width="2" height="32" fill="%234c567a"/><rect x="30" y="0" width="2" height="32" fill="%234c567a"/></svg>');
+      --main-border: #00ffe7;
+      --main-glow: #00ffe788;
+      --main-accent: #4fc3f7;
+      --main-label-shadow: #00ffe7;
+      --modal-bg: #181825;
+      --modal-border: #00ffe7;
+      --modal-link-bg: #00ffe7;
+      --modal-link-hover: #4fc3f7;
+      --modal-link-color: #181825;
+      --modal-link-hover-color: #00ffe7;
     }
     html, body {
       height: 100%;
@@ -65,30 +49,26 @@
       cursor: url('https://cur.cursors-4u.net/games/gam-16/gam1550.cur'), auto;
       transition: background 0.3s;
     }
-    #theme-switcher {
+    #theme-toggle {
       position: fixed;
       top: 18px;
       right: 24px;
       z-index: 300;
-      display: flex;
-      gap: 10px;
-    }
-    .theme-btn {
-      width: 38px; height: 38px;
-      border-radius: 8px;
-      border: 2px solid var(--border-color);
-      background: var(--main-bg);
+      background: var(--main-border);
+      color: var(--modal-link-color);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 1.1em;
+      font-weight: bold;
+      padding: 10px 22px;
+      box-shadow: 0 0 8px var(--main-glow);
       cursor: pointer;
-      box-shadow: 0 0 8px var(--border-color)44;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3em;
-      color: var(--border-color);
-      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      transition: background 0.18s, color 0.18s;
     }
-    .theme-btn.selected, .theme-btn:hover {
-      border: 3px solid var(--border-color);
-      box-shadow: 0 0 16px var(--border-color)99;
-      background: #fff2;
+    #theme-toggle:hover {
+      background: var(--main-accent);
+      color: var(--main-border);
     }
     #mynetwork {
       position: absolute;
@@ -99,55 +79,60 @@
       z-index: 1;
       border: 0;
     }
+    /* Pixel border effect */
     #mynetwork:after {
       content: '';
       position: absolute;
       pointer-events: none;
       top: 0; left: 0; right: 0; bottom: 0;
-      border: 12px solid var(--border-color);
+      border: 12px solid var(--main-border);
       box-sizing: border-box;
-      filter: drop-shadow(0 0 8px var(--border-color)) drop-shadow(0 0 2px #fff);
+      filter: drop-shadow(0 0 8px var(--main-border)) drop-shadow(0 0 2px #fff);
       border-radius: 0;
       z-index: 2;
       image-rendering: pixelated;
+      transition: border-color 0.3s, filter 0.3s;
     }
+    /* Node label style override */
     .vis-network .vis-label {
       font-family: 'Orbitron', Arial, sans-serif !important;
       font-size: 1.3em !important;
       color: #fff !important;
-      text-shadow: 0 2px 8px #000, 0 0 2px var(--label-shadow) !important;
-      background: var(--label-bg) !important;
+      text-shadow: 0 2px 8px #000, 0 0 2px var(--main-label-shadow) !important;
+      background: rgba(20,20,20,0.85) !important;
       border-radius: 8px !important;
       padding: 8px 18px !important;
-      box-shadow: 0 0 8px var(--label-shadow)88 !important;
+      box-shadow: 0 0 8px var(--main-glow) !important;
       border: none !important;
       user-select: none;
+      transition: box-shadow 0.3s, text-shadow 0.3s;
     }
+    /* Custom tooltip */
     #custom-tooltip {
       position: absolute;
       z-index: 100;
       pointer-events: none;
-      background: var(--label-bg);
+      background: rgba(34, 26, 16, 0.98);
       color: #fff;
       font-family: 'Orbitron', Arial, sans-serif;
       font-size: 1.1em;
-      border: 2px solid var(--border-color);
+      border: 2px solid var(--main-border);
       border-radius: 10px;
-      box-shadow: 0 0 16px var(--border-color)88;
+      box-shadow: 0 0 16px var(--main-glow);
       padding: 14px 22px 10px 22px;
       min-width: 220px;
       max-width: 350px;
       opacity: 0;
-      transition: opacity 0.18s;
+      transition: opacity 0.18s, border-color 0.3s, box-shadow 0.3s;
       pointer-events: none;
       white-space: pre-line;
     }
     #custom-tooltip .tt-title {
       font-size: 1.2em;
       font-weight: bold;
-      color: var(--label-meta);
+      color: var(--main-accent);
       margin-bottom: 6px;
-      text-shadow: 0 2px 8px #000, 0 0 2px var(--label-shadow);
+      text-shadow: 0 2px 8px #000, 0 0 2px var(--main-label-shadow);
     }
     #custom-tooltip .tt-desc {
       color: #fff;
@@ -155,7 +140,7 @@
       font-size: 1em;
     }
     #custom-tooltip .tt-meta {
-      color: var(--label-meta);
+      color: var(--main-accent);
       font-size: 0.95em;
       margin-top: 4px;
       display: flex;
@@ -163,10 +148,11 @@
       align-items: center;
     }
     #custom-tooltip .tt-star {
-      color: var(--label-meta);
+      color: var(--main-accent);
       font-size: 1.1em;
       margin-right: 2px;
     }
+    /* Modal styles */
     #modal-bg {
       display: none;
       position: fixed;
@@ -189,12 +175,13 @@
       background: var(--modal-bg);
       border: 3px solid var(--modal-border);
       border-radius: 18px;
-      box-shadow: 0 0 32px var(--modal-border)88, 0 0 2px #fff;
+      box-shadow: 0 0 32px var(--main-glow), 0 0 2px #fff;
       padding: 32px 32px 24px 32px;
       color: #fff;
       font-family: 'Orbitron', Arial, sans-serif;
       z-index: 201;
       animation: modal-pop 0.22s cubic-bezier(.23,1.12,.62,1.01);
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     @keyframes modal-pop {
       from { transform: translate(-50%, -60%) scale(0.8); opacity: 0; }
@@ -202,9 +189,10 @@
     }
     #modal .modal-title {
       font-size: 2em;
-      color: var(--modal-title);
+      color: var(--main-accent);
       margin-bottom: 10px;
-      text-shadow: 0 2px 8px #000, 0 0 2px var(--modal-border);
+      text-shadow: 0 2px 8px #000, 0 0 2px var(--main-label-shadow);
+      transition: color 0.3s, text-shadow 0.3s;
     }
     #modal .modal-desc {
       font-size: 1.1em;
@@ -212,7 +200,7 @@
       color: #fff;
     }
     #modal .modal-meta {
-      color: var(--modal-title);
+      color: var(--main-accent);
       font-size: 1.1em;
       margin-bottom: 18px;
       display: flex;
@@ -220,7 +208,7 @@
       align-items: center;
     }
     #modal .modal-star {
-      color: var(--modal-title);
+      color: var(--main-accent);
       font-size: 1.2em;
       margin-right: 2px;
     }
@@ -236,18 +224,18 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
-      box-shadow: 0 0 8px var(--modal-link-bg)88;
+      box-shadow: 0 0 8px var(--main-glow);
       transition: background 0.15s, color 0.15s;
     }
     #modal .modal-link:hover {
-      background: var(--modal-link-hover-bg);
+      background: var(--modal-link-hover);
       color: var(--modal-link-hover-color);
     }
     #modal .modal-close {
       position: absolute;
       top: 10px; right: 18px;
       font-size: 2em;
-      color: var(--modal-title);
+      color: var(--main-accent);
       background: none;
       border: none;
       cursor: pointer;
@@ -258,54 +246,10 @@
     #modal .modal-close:hover {
       color: #fff;
     }
-    /* Ачивка */
-    #achievement {
-      display: none;
-      position: fixed;
-      left: 50%; top: 8%;
-      transform: translate(-50%, 0);
-      z-index: 500;
-      background: var(--modal-bg);
-      color: var(--modal-title);
-      border: 3px solid var(--modal-border);
-      border-radius: 16px;
-      box-shadow: 0 0 24px var(--modal-border)99;
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 1.3em;
-      padding: 18px 38px;
-      text-align: center;
-      animation: ach-pop 0.3s;
-    }
-    @keyframes ach-pop {
-      from { opacity: 0; transform: translate(-50%, -20%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, 0) scale(1); }
-    }
-    /* Пасхалка */
-    #easter-egg {
-      display: none;
-      position: fixed;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 600;
-      background: var(--modal-bg);
-      color: var(--modal-title);
-      border: 3px solid var(--modal-border);
-      border-radius: 18px;
-      box-shadow: 0 0 32px var(--modal-border)cc;
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 2em;
-      padding: 40px 60px;
-      text-align: center;
-      animation: ach-pop 0.3s;
-    }
   </style>
 </head>
-<body data-theme="night">
-  <div id="theme-switcher">
-    <button class="theme-btn selected" data-theme="night" title="Ночная тема">🌙</button>
-    <button class="theme-btn" data-theme="retro" title="Ретро">🟩</button>
-    <button class="theme-btn" data-theme="cyber" title="Киберпанк">🟪</button>
-  </div>
+<body>
+  <button id="theme-toggle" title="Сменить тему">🌙 Тема</button>
   <div id="mynetwork"></div>
   <div id="custom-tooltip"></div>
   <div id="modal-bg">
@@ -317,23 +261,30 @@
       <a class="modal-link" href="#" target="_blank">Открыть на GitHub</a>
     </div>
   </div>
-  <div id="achievement">Achievement unlocked!</div>
-  <div id="easter-egg">👾 Секрет найден! 👾<br>Ты кликнул по кубу 5 раз подряд!</div>
   <script>
     // SVG pixel cube for central node (base64, 64x64)
     const voxelCube =
       'data:image/svg+xml;base64,' +
       btoa(`<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g><polygon points="32,4 60,20 32,36 4,20" fill="#ffb800" stroke="#a66c00" stroke-width="2"/><polygon points="32,36 60,20 60,48 32,60" fill="#ffe066" stroke="#a66c00" stroke-width="2"/><polygon points="32,36 4,20 4,48 32,60" fill="#d49c3d" stroke="#a66c00" stroke-width="2"/></g></svg>`);
 
-    // --- Theme switcher ---
-    const themeBtns = document.querySelectorAll('.theme-btn');
-    themeBtns.forEach(btn => {
-      btn.onclick = () => {
-        document.body.setAttribute('data-theme', btn.dataset.theme);
-        themeBtns.forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      };
-    });
+    // --- Theme toggle ---
+    const themeToggle = document.getElementById('theme-toggle');
+    let theme = localStorage.getItem('theme') || 'retro';
+    function applyTheme() {
+      if (theme === 'night') {
+        document.body.classList.add('theme-night');
+        themeToggle.innerHTML = '☀️ Тема';
+      } else {
+        document.body.classList.remove('theme-night');
+        themeToggle.innerHTML = '🌙 Тема';
+      }
+      localStorage.setItem('theme', theme);
+    }
+    themeToggle.onclick = function() {
+      theme = (theme === 'retro') ? 'night' : 'retro';
+      applyTheme();
+    };
+    applyTheme();
 
     async function fetchRepos() {
       const res = await fetch('https://api.github.com/users/Serega25511s/repos');
@@ -351,6 +302,7 @@
     // Авто-группировка по первым словам
     function groupRepos(repos) {
       const groups = {};
+      const otherKey = 'Other';
       repos.forEach(repo => {
         // Берём всё до первого дефиса или подчёркивания
         const match = repo.name.match(/^[^\-_]+/);
@@ -378,7 +330,7 @@
           bold: true
         },
         borderWidth: 0,
-        color: { border: 'var(--border-color)', background: '#23233a' },
+        color: { border: getComputedStyle(document.body).getPropertyValue('--main-border').trim() || '#b8860b', background: '#23233a' },
         shadow: true
       }];
       const edges = [];
@@ -386,14 +338,14 @@
       let groupId = 1;
       for (const [group, groupRepos] of Object.entries(groups)) {
         let groupNodeId = null;
-        if (groupRepos.length > 1) {
+        if (group !== 'Other' && groupRepos.length > 1) {
           groupNodeId = `group_${groupId++}`;
           nodes.push({
             id: groupNodeId,
             label: group,
             shape: 'box',
             font: { color: '#fff', size: 32, face: 'Orbitron', strokeWidth: 6, strokeColor: '#000', bold: true },
-            color: { background: 'rgba(20,20,20,0.95)', border: 'var(--border-color)', highlight: { border: '#fff', background: 'rgba(20,20,20,1)' } },
+            color: { background: 'rgba(20,20,20,0.95)', border: getComputedStyle(document.body).getPropertyValue('--main-border').trim() || '#b8860b', highlight: { border: '#fff', background: 'rgba(20,20,20,1)' } },
             shadow: true,
             borderWidth: 0,
             size: 50
@@ -409,8 +361,8 @@
             shape: "box",
             color: {
               border: 'rgba(0,0,0,0)',
-              background: 'var(--label-bg)',
-              highlight: { border: 'var(--border-color)', background: 'rgba(20,20,20,1)' }
+              background: 'rgba(20,20,20,0.85)',
+              highlight: { border: getComputedStyle(document.body).getPropertyValue('--main-border').trim() || '#b8860b', background: 'rgba(20,20,20,1)' }
             },
             font: { color: "#fff", size: 28, face: 'Orbitron' },
             url: repo.html_url,
@@ -568,47 +520,12 @@
         if (e.key === 'Escape') window.closeModal();
       });
 
-      // --- Пасхалка: 5 кликов по кубу ---
-      let cubeClickCount = 0;
-      let cubeClickTimer = null;
-      const easterEgg = document.getElementById('easter-egg');
-      function showEasterEgg() {
-        easterEgg.style.display = 'block';
-        setTimeout(() => { easterEgg.style.display = 'none'; }, 3000);
-      }
-
-      // --- Ачивка: открыть все проекты ---
-      let openedProjects = new Set();
-      const achievement = document.getElementById('achievement');
-      function showAchievement() {
-        achievement.textContent = 'Achievement unlocked: Исследователь!';
-        achievement.style.display = 'block';
-        setTimeout(() => { achievement.style.display = 'none'; }, 3500);
-      }
-
       network.on("click", function (params) {
         if (params.nodes.length > 0) {
           const node = data.nodes.get(params.nodes[0]);
-          // Пасхалка: 5 кликов по кубу
-          if (params.nodes[0] === 'center') {
-            cubeClickCount++;
-            clearTimeout(cubeClickTimer);
-            cubeClickTimer = setTimeout(() => { cubeClickCount = 0; }, 1200);
-            if (cubeClickCount === 5) {
-              showEasterEgg();
-              cubeClickCount = 0;
-            }
-            return;
-          }
           // Только для проектов (не центр и не группа)
           if (node && node._meta) {
             openModal(node);
-            openedProjects.add(node.id);
-            // Ачивка: если открыты все проекты
-            const allProjectIds = nodes.filter(n => n._meta).map(n => n.id);
-            if (openedProjects.size === allProjectIds.length) {
-              showAchievement();
-            }
           } else if (node && node.url) {
             window.open(node.url, "_blank");
           }
