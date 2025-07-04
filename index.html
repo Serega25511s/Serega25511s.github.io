@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Serega25511s GitHub</title>
+  <title>Serega25511s GitHub Voxel Graph</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
@@ -37,9 +37,9 @@
       position: absolute;
       pointer-events: none;
       top: 0; left: 0; right: 0; bottom: 0;
-      border: 12px solid #00ffe7;
+      border: 12px solid #b8860b;
       box-sizing: border-box;
-      filter: drop-shadow(0 0 8px #00ffe7) drop-shadow(0 0 2px #fff);
+      filter: drop-shadow(0 0 8px #b8860b) drop-shadow(0 0 2px #fff);
       border-radius: 0;
       z-index: 2;
       image-rendering: pixelated;
@@ -49,11 +49,11 @@
       font-family: 'Orbitron', Arial, sans-serif !important;
       font-size: 1.3em !important;
       color: #fff !important;
-      text-shadow: 0 2px 8px #000, 0 0 2px #00ffe7 !important;
+      text-shadow: 0 2px 8px #000, 0 0 2px #b8860b !important;
       background: rgba(20,20,20,0.85) !important;
       border-radius: 8px !important;
       padding: 8px 18px !important;
-      box-shadow: 0 0 8px #00ffe788 !important;
+      box-shadow: 0 0 8px #b8860b88 !important;
       border: none !important;
       user-select: none;
     }
@@ -80,9 +80,23 @@
       return palette[Math.floor(Math.random() * palette.length)];
     }
 
+    // Авто-группировка по первым словам
+    function groupRepos(repos) {
+      const groups = {};
+      const otherKey = 'Other';
+      repos.forEach(repo => {
+        // Берём всё до первого дефиса или подчёркивания
+        const match = repo.name.match(/^[^\-_]+/);
+        const key = match ? match[0] : repo.name;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(repo);
+      });
+      return groups;
+    }
+
     function createGraph(repos) {
       const nodes = [{
-        id: 0,
+        id: 'center',
         label: "Serega25511s",
         shape: "circularImage",
         image: voxelCube,
@@ -92,34 +106,58 @@
           color: '#fff',
           face: 'Orbitron',
           strokeWidth: 8,
-          strokeColor: '#00ffe7',
+          strokeColor: '#000',
           vadjust: 60,
           bold: true
         },
         borderWidth: 0,
-        color: { border: '#00ffe7', background: '#23233a' },
+        color: { border: '#b8860b', background: '#23233a' },
         shadow: true
       }];
       const edges = [];
-      repos.forEach((repo, i) => {
-        nodes.push({
-          id: i+1,
-          label: repo.name,
-          title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
-          shape: "box",
-          color: {
-            border: 'rgba(0,0,0,0)',
-            background: 'rgba(20,20,20,0.85)',
-            highlight: { border: '#00ffe7', background: 'rgba(20,20,20,1)' }
-          },
-          font: { color: "#fff", size: 28, face: 'Orbitron' },
-          url: repo.html_url,
-          shadow: true,
-          borderWidth: 0,
-          size: 40
+      const groups = groupRepos(repos);
+      let groupId = 1;
+      for (const [group, groupRepos] of Object.entries(groups)) {
+        let groupNodeId = null;
+        if (group !== 'Other' && groupRepos.length > 1) {
+          groupNodeId = `group_${groupId++}`;
+          nodes.push({
+            id: groupNodeId,
+            label: group,
+            shape: 'box',
+            font: { color: '#fff', size: 32, face: 'Orbitron', strokeWidth: 6, strokeColor: '#000', bold: true },
+            color: { background: 'rgba(20,20,20,0.95)', border: '#b8860b', highlight: { border: '#fff', background: 'rgba(20,20,20,1)' } },
+            shadow: true,
+            borderWidth: 0,
+            size: 50
+          });
+          edges.push({ from: 'center', to: groupNodeId, color: { color: getRandomColor(), highlight: '#fff' }, width: 6, shadow: true });
+        }
+        groupRepos.forEach(repo => {
+          const nodeId = repo.name;
+          nodes.push({
+            id: nodeId,
+            label: repo.name,
+            title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
+            shape: "box",
+            color: {
+              border: 'rgba(0,0,0,0)',
+              background: 'rgba(20,20,20,0.85)',
+              highlight: { border: '#b8860b', background: 'rgba(20,20,20,1)' }
+            },
+            font: { color: "#fff", size: 28, face: 'Orbitron' },
+            url: repo.html_url,
+            shadow: true,
+            borderWidth: 0,
+            size: 40
+          });
+          if (groupNodeId) {
+            edges.push({ from: groupNodeId, to: nodeId, color: { color: getRandomColor(), highlight: '#fff' }, width: 4, shadow: true });
+          } else {
+            edges.push({ from: 'center', to: nodeId, color: { color: getRandomColor(), highlight: '#fff' }, width: 6, shadow: true });
+          }
         });
-        edges.push({from: 0, to: i+1, color: { color: getRandomColor(), highlight: '#fff' }, width: 6, shadow: true});
-      });
+      }
 
       const container = document.getElementById('mynetwork');
       const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
@@ -147,9 +185,11 @@
       const network = new vis.Network(container, data, options);
 
       network.on("click", function (params) {
-        if (params.nodes.length > 0 && params.nodes[0] !== 0) {
-          const node = nodes[params.nodes[0]];
-          window.open(node.url, "_blank");
+        if (params.nodes.length > 0) {
+          const node = nodes.find(n => n.id === params.nodes[0]);
+          if (node && node.url) {
+            window.open(node.url, "_blank");
+          }
         }
       });
     }
