@@ -5,8 +5,7 @@
   <title>Serega25511s GitHub Voxel Graph</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <!-- Pixel font -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     html, body {
       height: 100%;
@@ -19,8 +18,7 @@
       width: 100vw;
       height: 100vh;
       box-sizing: border-box;
-      font-family: 'Press Start 2P', monospace;
-      /* Pixel brick background */
+      font-family: 'Orbitron', Arial, sans-serif;
       background: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" fill="%23221a16"/><rect x="0" y="0" width="16" height="16" fill="%23332a24"/><rect x="16" y="16" width="16" height="16" fill="%23332a24"/><rect x="0" y="16" width="16" height="16" fill="%23443a32"/><rect x="16" y="0" width="16" height="16" fill="%23443a32"/><rect x="0" y="0" width="32" height="2" fill="%235c463a"/><rect x="0" y="30" width="32" height="2" fill="%235c463a"/><rect x="0" y="0" width="2" height="32" fill="%235c463a"/><rect x="30" y="0" width="2" height="32" fill="%235c463a"/></svg>');
       cursor: url('https://cur.cursors-4u.net/games/gam-16/gam1550.cur'), auto;
     }
@@ -33,15 +31,35 @@
       z-index: 1;
       border: 0;
     }
+    #nickname {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      transform: translate(-50%, 0);
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 2.5em;
+      color: #fff;
+      text-shadow: 0 2px 8px #000, 0 0 2px #00ffe7;
+      background: rgba(20, 20, 20, 0.7);
+      border-radius: 12px;
+      padding: 12px 32px 8px 32px;
+      letter-spacing: 2px;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      border: 2px solid #00ffe7;
+      box-shadow: 0 0 16px #00ffe788;
+      animation: flicker 2s infinite alternate;
+    }
     /* Pixel border effect */
     #mynetwork:after {
       content: '';
       position: absolute;
       pointer-events: none;
       top: 0; left: 0; right: 0; bottom: 0;
-      border: 12px solid #ffb800;
+      border: 12px solid #00ffe7;
       box-sizing: border-box;
-      filter: drop-shadow(0 0 8px #ffb800) drop-shadow(0 0 2px #fff);
+      filter: drop-shadow(0 0 8px #00ffe7) drop-shadow(0 0 2px #fff);
       border-radius: 0;
       z-index: 2;
       image-rendering: pixelated;
@@ -54,21 +72,24 @@
       55% { filter: brightness(1.3); }
       60% { filter: brightness(0.9); }
     }
-    /* Shake animation */
-    @keyframes shake {
-      0% { transform: translate(0, 0); }
-      20% { transform: translate(-2px, 2px); }
-      40% { transform: translate(2px, -2px); }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(2px, 0); }
-      100% { transform: translate(0, 0); }
+    /* Node label style override */
+    .vis-network .vis-label {
+      font-family: 'Orbitron', Arial, sans-serif !important;
+      font-size: 1.3em !important;
+      color: #fff !important;
+      text-shadow: 0 2px 8px #000, 0 0 2px #00ffe7 !important;
+      background: rgba(20,20,20,0.85) !important;
+      border-radius: 8px !important;
+      padding: 8px 18px !important;
+      box-shadow: 0 0 8px #00ffe788 !important;
+      border: none !important;
+      user-select: none;
     }
-    /* Hide scrollbars */
-    ::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body>
   <div id="mynetwork"></div>
+  <div id="nickname">Serega25511s</div>
   <script>
     // SVG pixel cube for central node (base64, 64x64)
     const voxelCube =
@@ -83,7 +104,7 @@
     function getRandomColor() {
       // Voxel palette
       const palette = [
-        '#ffb800', '#ff5e00', '#ffe066', '#d49c3d', '#ff004c', '#00ffe7', '#00aaff', '#fff', '#b8b8ff', '#ffb8b8'
+        '#00ffe7', '#ff5e00', '#ffe066', '#d49c3d', '#ff004c', '#00aaff', '#fff', '#b8b8ff', '#ffb8b8'
       ];
       return palette[Math.floor(Math.random() * palette.length)];
     }
@@ -97,7 +118,7 @@
         size: 100,
         font: { size: 0 },
         borderWidth: 0,
-        color: { border: '#ffb800', background: '#ffe066' },
+        color: { border: '#00ffe7', background: '#23233a' },
         shadow: true
       }];
       const edges = [];
@@ -108,14 +129,14 @@
           title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
           shape: "box",
           color: {
-            border: getRandomColor(),
-            background: '#221a16',
-            highlight: { border: '#fff', background: '#332a24' }
+            border: 'rgba(0,0,0,0)',
+            background: 'rgba(20,20,20,0.85)',
+            highlight: { border: '#00ffe7', background: 'rgba(20,20,20,1)' }
           },
-          font: { color: "#ffe066", size: 16, face: 'Press Start 2P' },
+          font: { color: "#fff", size: 32, face: 'Orbitron' },
           url: repo.html_url,
           shadow: true,
-          borderWidth: 8,
+          borderWidth: 0,
           size: 40
         });
         edges.push({from: 0, to: i+1, color: { color: getRandomColor(), highlight: '#fff' }, width: 6, shadow: true});
@@ -125,9 +146,9 @@
       const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
       const options = {
         nodes: {
-          borderWidth: 8,
+          borderWidth: 0,
           size: 40,
-          font: { size: 16, face: 'Press Start 2P' },
+          font: { size: 32, face: 'Orbitron' },
           shapeProperties: { borderDashes: false },
           shadow: true,
           margin: 8
@@ -145,18 +166,6 @@
         interaction: { hover: true }
       };
       const network = new vis.Network(container, data, options);
-
-      // Анимация: мерцание и дрожание нод
-      setInterval(() => {
-        nodes.forEach((node, idx) => {
-          const el = document.querySelector(`[aria-label="${node.label}"]`);
-          if (el) {
-            el.style.animation = (idx % 2 === 0)
-              ? 'flicker 1.2s infinite alternate'
-              : 'shake 0.5s infinite alternate';
-          }
-        });
-      }, 2000);
 
       network.on("click", function (params) {
         if (params.nodes.length > 0 && params.nodes[0] !== 0) {
