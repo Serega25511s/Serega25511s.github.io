@@ -2,56 +2,65 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Портфолио Serega25511s</title>
+  <title>Serega25511s GitHub Graph</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <!-- Pixel font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(135deg, #232526 0%, #414345 100%);
-      color: #fff;
-      font-family: 'Montserrat', Arial, sans-serif;
+    html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
-      min-height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: #181825;
     }
-    h1 {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 2.5em;
-      letter-spacing: 2px;
-      color: #4fc3f7;
-      text-shadow: 0 2px 8px #0008;
+    body {
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+      font-family: 'Press Start 2P', monospace;
+      background: repeating-linear-gradient(45deg, #181825 0px, #181825 20px, #23233a 20px, #23233a 40px);
     }
     #mynetwork {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       width: 100vw;
-      height: 80vh;
-      margin: 0 auto;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px #0006;
-      background: #232526;
-      border: 2px solid #4fc3f7;
+      height: 100vh;
+      background: transparent;
+      z-index: 1;
+      border: 0;
     }
-    .footer {
-      text-align: center;
-      margin: 30px 0 10px 0;
-      color: #aaa;
-      font-size: 1em;
+    #mynetwork:after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border: 8px solid #00ffe7;
+      box-sizing: border-box;
+      filter: drop-shadow(0 0 8px #00ffe7) drop-shadow(0 0 2px #fff);
+      border-radius: 0;
+      z-index: 2;
     }
-    @media (max-width: 600px) {
-      h1 { font-size: 1.3em; }
-      #mynetwork { height: 60vh; }
-    }
+    /* Hide scrollbars */
+    ::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body>
-  <h1>Портфолио Serega25511s</h1>
   <div id="mynetwork"></div>
-  <div class="footer">GitHub: <a href="https://github.com/Serega25511s" style="color:#4fc3f7;" target="_blank">@Serega25511s</a></div>
   <script>
     async function fetchRepos() {
       const res = await fetch('https://api.github.com/users/Serega25511s/repos');
       return res.json();
+    }
+
+    function getRandomColor() {
+      // Pixel palette
+      const palette = [
+        '#00ffe7', '#ff00a2', '#ffe600', '#00ff57', '#ff5e00', '#00aaff', '#ff004c', '#fff', '#b8b8ff', '#ffb8b8'
+      ];
+      return palette[Math.floor(Math.random() * palette.length)];
     }
 
     function createGraph(repos) {
@@ -60,10 +69,11 @@
         label: "Serega25511s",
         shape: "circularImage",
         image: "https://avatars.githubusercontent.com/u/139003321?v=4",
-        size: 60,
-        font: { size: 24, color: '#4fc3f7', face: 'Montserrat' },
-        borderWidth: 4,
-        color: { border: '#4fc3f7', background: '#232526' }
+        size: 80,
+        font: { size: 32, color: '#00ffe7', face: 'Press Start 2P' },
+        borderWidth: 8,
+        color: { border: '#00ffe7', background: '#23233a' },
+        shadow: true
       }];
       const edges = [];
       repos.forEach((repo, i) => {
@@ -73,25 +83,35 @@
           title: (repo.description || "") + `\n⭐ ${repo.stargazers_count} | ${repo.language || ''}`,
           shape: "box",
           color: {
-            border: '#4fc3f7',
-            background: '#fff',
-            highlight: { border: '#ffb300', background: '#e3f2fd' }
+            border: getRandomColor(),
+            background: '#23233a',
+            highlight: { border: '#fff', background: '#23233a' }
           },
-          font: { color: "#232526", size: 18, face: 'Montserrat' },
+          font: { color: "#fff", size: 18, face: 'Press Start 2P' },
           url: repo.html_url,
           shadow: true
         });
-        edges.push({from: 0, to: i+1, color: { color: '#4fc3f7', highlight: '#ffb300' }, width: 2});
+        edges.push({from: 0, to: i+1, color: { color: getRandomColor(), highlight: '#fff' }, width: 4, shadow: true});
       });
 
       const container = document.getElementById('mynetwork');
       const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
       const options = {
-        nodes: { borderWidth: 2, size: 30, font: { size: 16 } },
-        edges: { color: "#fff", width: 2, smooth: true },
+        nodes: {
+          borderWidth: 8,
+          size: 40,
+          font: { size: 18, face: 'Press Start 2P' },
+          shapeProperties: { borderDashes: false },
+          shadow: true
+        },
+        edges: {
+          width: 4,
+          smooth: true,
+          shadow: true
+        },
         physics: {
           stabilization: false,
-          barnesHut: { gravitationalConstant: -30000, springLength: 200, springConstant: 0.04 }
+          barnesHut: { gravitationalConstant: -30000, springLength: 250, springConstant: 0.04 }
         },
         layout: { improvedLayout: true },
         interaction: { hover: true }
